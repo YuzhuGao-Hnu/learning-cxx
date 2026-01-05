@@ -9,11 +9,18 @@ struct Tensor {
     T *data;
 
     Tensor(unsigned int const shape_[N]) {
+        // 1. 拷贝输入的形状到当前Tensor的shape数组
+        std::memcpy(shape, shape_, N * sizeof(unsigned int));
+        // 2. 计算总元素数：N个维度的乘积
         unsigned int size = 1;
-        // TODO: 填入正确的 shape 并计算 size
+        for (unsigned int i = 0; i < N; ++i) {
+            size *= shape[i];
+        }
+        // 3. 分配内存并初始化为0
         data = new T[size];
         std::memset(data, 0, size * sizeof(T));
     }
+
     ~Tensor() {
         delete[] data;
     }
@@ -32,9 +39,14 @@ struct Tensor {
 private:
     unsigned int data_index(unsigned int const indices[N]) const {
         unsigned int index = 0;
-        for (unsigned int i = 0; i < N; ++i) {
+        unsigned int step = 1; // 最后一个维度的步长初始为1
+        // 从最后一个维度往前遍历，计算多维索引对应的一维扁平索引
+        for (int i = N - 1; i >= 0; --i) { // 用int避免unsigned减到负数的问题
             ASSERT(indices[i] < shape[i], "Invalid index");
-            // TODO: 计算 index
+            // 当前维度索引 × 步长，累加到总索引
+            index += indices[i] * step;
+            // 更新步长：前一个维度的步长 = 当前步长 × 当前维度的长度
+            step *= shape[i];
         }
         return index;
     }

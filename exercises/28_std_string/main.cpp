@@ -1,18 +1,18 @@
 ﻿#include "../exercise.h"
 #include <string>
-
-// READ: 字符串 <https://zh.cppreference.com/w/cpp/string/basic_string>
+// 必须包含此头文件才能使用 std::is_same_v
+#include <type_traits>
 
 int main(int argc, char **argv) {
-    // READ: 字符串字面量 <https://zh.cppreference.com/w/cpp/string/basic_string/operator%22%22s>
     using namespace std::string_literals;
     auto hello = "Hello"s;
     auto world = "world";
-    // READ: `decltype` 表达式 <https://zh.cppreference.com/w/cpp/language/decltype>
-    // READ: `std::is_same_v` 元编程判别 <https://zh.cppreference.com/w/cpp/types/is_same>
-    ASSERT((std::is_same_v<decltype(hello), ?>), "Fill in the missing type.");
-    ASSERT((std::is_same_v<decltype(world), ?>), "Fill in the missing type.");
-    // TODO: 将 `?` 替换为正确的字符串
-    ASSERT(hello + ", " + world + '!' == "?", "Fill in the missing string.");
+
+    // 替换占位符：推导 hello 的类型是 std::string
+    ASSERT((std::is_same_v<decltype(hello), std::string>), "Fill in the missing type.");
+    // 替换占位符：推导 world 的类型是 const char*
+    ASSERT((std::is_same_v<decltype(world), const char*>), "Fill in the missing type.");
+    // 替换占位符：拼接结果是 "Hello, world!"
+    ASSERT(hello + ", " + world + '!' == "Hello, world!", "Fill in the missing string.");
     return 0;
 }
